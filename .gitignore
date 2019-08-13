@@ -89,3 +89,4 @@ typings/
 
 # Google API
 uai-service-account.json
+firebase-debug.log

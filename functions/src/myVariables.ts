@@ -2,9 +2,9 @@
 export class myVariables{
 
     static readonly SENTRY_DSN = 'https://33bffc6c07b344e58a626176c621e437@sentry.io/1481644';
-    static readonly GOOGLE_PROJECT_ID = 'universeai';
+    static readonly GOOGLE_PROJECT_ID = 'projectuai';
     static readonly FIREBASE_KEYFILE = './uai-service-account.json';
-    static readonly FIREBASE_DATABASE_URL = 'https://universeai-icekode-firebase.firebaseio.com';
+    static readonly FIREBASE_DATABASE_URL = 'https://projectuai.firebaseio.com';
 
     static readonly DS_TABLE_CELESTIAL_COMPONENTS = 'CelestialComponents';
 

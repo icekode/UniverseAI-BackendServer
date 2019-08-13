@@ -9,6 +9,12 @@ import * as functions from 'firebase-functions';
 import { logIt} from "./logger";
 import { myVariables} from "./myVariables";
 import { testComponents, addComponentsToDatabase, updateSingleComponentInDatabase, getComponentInfoByID , getListOfComponents} from './crudComponents';
+import { getUserAccounts } from './crudUsers';
+import * as sentry from "@sentry/node";
+
+
+// Initialize Sentry.IO Exeception Logging
+sentry.init({ dsn: myVariables.SENTRY_DSN });
 
 
 
@@ -23,3 +29,5 @@ exports.componentsAddToDB = functions.https.onRequest(addComponentsToDatabase);
 exports.componentsUpdateInDB = functions.https.onRequest(updateSingleComponentInDatabase);
 exports.componentsLoadByID = functions.https.onRequest(getComponentInfoByID);
 exports.componentsLoadList = functions.https.onRequest(getListOfComponents);
+
+exports.adminGetAllUsers = functions.https.onRequest(getUserAccounts);

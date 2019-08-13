@@ -8,7 +8,7 @@
 
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
-import * as sentry from '@sentry/node';
+import * as sentry from "@sentry/node";
 import { IComponents} from "../models/components.model";
 import { makeDBKey, checkIfNull } from "./helper";
 import { myVariables} from "./myVariables";
@@ -21,11 +21,14 @@ const serviceAccount = require(myVariables.FIREBASE_KEYFILE);
 // Initialize Sentry.IO Exeception Logging
 sentry.init({ dsn: myVariables.SENTRY_DSN });
 
+//TODO Need to move this to a global file. It does not work in the index and cannot be called in each function.
 // Initialize Google Firestore Access
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: myVariables.FIREBASE_DATABASE_URL
 });
+
+
 
 // This is the Firebase Cloud Firestore
 const database = admin.firestore();
