@@ -1,15 +1,55 @@
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /users/{userId} {
-      allow read;
-      allow create: if request.auth.uid == userId && request.resource.data.createdAt == request.time;
+
+    // this addresses any entry in the user collection
+    match /Users/{user} {
+     	// anyone can see a specific users profile data (name, email etc), in a real scenario you might want to make this more granular
+  		allow get: if isSignedIn();
+  		// noone can query for users
+ 	  	 allow list, create: if false;
+  		// users can modify their own data
+ 		 allow update, delete: if isSignedIn() &&  request.auth.uid == user;
     }
-    match /rooms/{roomId} {
-      allow read;
-      // If you create a room, you must set yourself as the owner.
-      allow create: if request.resource.data.owner == request.auth.uid;
-      // Only the room owner is allowed to modify it.
-      allow update: if resource.data.owner == request.auth.uid;
+
+    // rules for the roles setup
+    match /Roles/{user} {
+       // user able to get roles of themselves or admin
+       allow get: if isSignedIn() && request.auth.uid == user || hasRole('admin');
+       // only admin has ability to pull list roles
+ 			 allow list: if isSignedIn() &&  hasRole('admin');
+       // only admin has ability to update roles
+       allow update: if isSignedIn() &&  hasRole('admin');
+       //only super admin has ability to create/delete roles
+       allow create, delete: if isSignedIn() &&  hasRole('superAdmin');
     }
+
+    match /Components/{component} {
+        // get components if signedin
+        allow get: if isSignedIn();
+        // get list of components if signedin
+ 			  allow list: if isSignedIn();
+        // only admin has ability to update components
+        allow update: if isSignedIn() &&  hasRole('admin');
+        //only admin has ability to create/delete components
+        allow create, delete: if isSignedIn() &&  hasRole('admin');
+    }
+
+        // the request object contains info about the authentication status of the requesting user
+        // if the .auth property is not set, the user is not signed in
+        function isSignedIn() {
+          return request.auth != null;
+        }
+        // return the current users entry in the roles collection
+        function getRoles() {
+          return get(/databases/$(database)/documents/Roles/$(request.auth.uid)).data
+        }
+        // check if the current user has a specific role
+        function hasRole(role) {
+          return isSignedIn() && getRoles()[role] == true;
+        }
+        // check if the user has any of the given roles (list)
+        function hasAnyRole(roles) {
+          return isSignedIn() && getRoles().keys().hasAny(roles);
+        }
   }
 }
