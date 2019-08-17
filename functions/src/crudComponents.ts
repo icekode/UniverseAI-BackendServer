@@ -160,6 +160,10 @@ export function getListOfComponents(req: functions.Request, res:functions.Respon
     logIt(myVariables.LOG_INFO, 'getListOfComponents initiated');
 
     const data: IComponents = req.body;
+    let authHeader: string | undefined = '';
+    authHeader = req.headers.authorization;
+
+    verifyToken(authHeader);
 
     if (!checkIfNull(data.componentType)) {
         const firestoreRefs = new firestoreComponentsReference(data.componentType);
@@ -265,4 +269,14 @@ export function testComponents(req: functions.Request, res: functions.Response) 
 
 
   return;
+}
+
+function verifyToken(token : any){
+    admin.auth().verifyIdToken(token)
+        .then(function(decodedToken) {
+            let uid = decodedToken.uid;
+            logIt(myVariables.LOG_INFO, 'Token UID: ' + uid);
+        }).catch(function(error) {
+        logIt(myVariables.LOG_ERROR, error);
+    });
 }
