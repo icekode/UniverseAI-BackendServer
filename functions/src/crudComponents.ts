@@ -1,3 +1,4 @@
+
 // Google Cloud Function Handler for Celesitial Components handling CRUD activities.
 // Example of this would be to add/delete/update minerals or ore within the primary database.
 // -kareemjg @ 6/14/2019
